@@ -27,6 +27,9 @@ public class AlbumReqDto {
     @Schema(description = "앨범날짜", required = true, example = "2022-04-20")
     private String date;
 
+    @Schema(description = "앨범아이디", required = true, example = "2022-04-20")
+    private long albumId;
+
 
 //    @NotEmpty
 //    @Schema(value = "앨범 사진", required = true, example = "")

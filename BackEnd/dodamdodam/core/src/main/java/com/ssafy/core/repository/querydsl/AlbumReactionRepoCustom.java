@@ -8,4 +8,6 @@ public interface AlbumReactionRepoCustom {
     List<AlbumReaction> findReactionsByAlbumId(long albumId);
     AlbumReaction findReactionByAlbumId(long albumId, long profileId);
 
+    AlbumReaction findReactionByReactionId(long reactionId, long profileId);
+
 }

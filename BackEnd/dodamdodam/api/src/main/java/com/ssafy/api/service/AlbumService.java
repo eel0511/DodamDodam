@@ -3,6 +3,7 @@ package com.ssafy.api.service;
 
 import com.ssafy.core.dto.req.AlbumReactionReqDto;
 import com.ssafy.core.dto.req.AlbumReqDto;
+import com.ssafy.core.dto.res.AlbumMainResDto;
 import com.ssafy.core.dto.res.AlbumReactionListResDto;
 import com.ssafy.core.entity.*;
 import com.ssafy.core.exception.CustomErrorCode;
@@ -82,7 +83,7 @@ public class AlbumService {
 
 
     @Transactional(readOnly = false)
-    public Picture findMainPictureByAlbumId(long albumId){
+    public AlbumMainResDto findMainPictureByAlbumId(long albumId){
         return pictureRepository.findMainPictureByAlbumId(albumId);
     }
 
@@ -299,11 +300,11 @@ public class AlbumService {
         }
     }
     @Transactional(readOnly = false)
-    public void deleteAlbumReaction(long userPk, Album album){
+    public void deleteAlbumReaction(long userPk, long reactionId){
         Profile profile = profileRepository.findProfileByUserPk(userPk);
         AlbumReaction albumReaction =
-                albumReactionRepository.findReactionByAlbumId(
-                        album.getId(), profile.getId());
+                albumReactionRepository.findReactionByReactionId(
+                        reactionId, profile.getId());
         albumReactionRepository.delete(albumReaction);
     }
 
@@ -316,10 +317,18 @@ public class AlbumService {
                     .emoticon(albumReactions.get(i).getEmoticon())
                     .imagePath(profile.getImagePath())
                     .role(profile.getRole())
+                    .profileId(profile.getId())
+                    .reactionId(albumReactions.get(i).getId())
                     .build();
             result.add(albumReactionListResDto);
         }
         return result;
+    }
+
+    @Transactional(readOnly = false)
+    public List<Album> findAlbumsByHashTag(String keyword, long albumId){
+
+        return albumRepository.findAlbumByHashTag(keyword,albumId);
     }
 
 

@@ -18,4 +18,10 @@ public class AlbumReactionListResDto {
     @Schema(description = "역할", example = "예시입니다.")
     private String role;
 
+    @Schema(description = "프로필id", example = "예시입니다.")
+    private long profileId;
+
+    @Schema(description = "리액션id", example = "예시입니다.")
+    private long reactionId;
+
 }

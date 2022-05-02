@@ -42,6 +42,20 @@ public class AlbumRepoCustomImpl implements AlbumRepoCustom{
                 .fetchOne();
     }
 
+    @Override
+    public List<Album> findAlbumByHashTag(String keyword, long familyId) {
+        return jpaQueryFactory.select(album)
+                .from(album)
+                .join(family)
+                .on(album.family.id.eq(family.id))
+                .where(album.family.id.eq(familyId))
+                .leftJoin(hashTag)
+                .on(album.id.eq(hashTag.album.id))
+                .where(hashTag.text.contains(keyword))
+                .orderBy(album.date.desc())
+                .fetch();
+    }
+
 
 
 

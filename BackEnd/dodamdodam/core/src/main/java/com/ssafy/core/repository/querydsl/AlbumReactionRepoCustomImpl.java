@@ -42,5 +42,16 @@ public class AlbumReactionRepoCustomImpl implements AlbumReactionRepoCustom{
                 .fetchFirst();
     }
 
+    @Override
+    public AlbumReaction findReactionByReactionId(long reactionId, long profileId) {
+
+        return jpaQueryFactory.select(albumReaction)
+                .from(albumReaction)
+                .leftJoin(albumReaction.album, album)
+                .fetchJoin()
+                .where(albumReaction.id.eq(reactionId).and(albumReaction.profile.id.eq(profileId)))
+                .fetchFirst();
+    }
+
 
 }

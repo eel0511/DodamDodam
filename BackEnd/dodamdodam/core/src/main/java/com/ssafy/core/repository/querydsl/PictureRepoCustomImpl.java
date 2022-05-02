@@ -1,6 +1,8 @@
 package com.ssafy.core.repository.querydsl;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.core.dto.res.AlbumMainResDto;
 import com.ssafy.core.entity.*;
 import com.ssafy.core.entity.Picture;
 import lombok.RequiredArgsConstructor;
@@ -34,14 +36,17 @@ public class PictureRepoCustomImpl implements PictureRepoCustom{
     }
 
     @Override
-    public Picture findMainPictureByAlbumId(long albumId) {
-        return jpaQueryFactory.select(picture)
+    public AlbumMainResDto findMainPictureByAlbumId(long albumId) {
+        AlbumMainResDto result = jpaQueryFactory.select(Projections.fields(AlbumMainResDto.class,
+                        picture.album.id.as("albumId"),
+                        picture.album.date,
+                        picture.path_name.as("imagePath")))
                 .from(picture)
-                .where(picture.album.id.eq(albumId).and(
-                        picture.is_main.eq(true)
-                ))
-                .leftJoin(picture.album, album)
-                .fetchJoin()
+                .join(picture.album,album)
+                .on(picture.album.id.eq(album.id))
+                .where(picture.album.id.eq(albumId).and(picture.is_main.eq(true)))
                 .fetchOne();
+
+        return result;
     }
 }

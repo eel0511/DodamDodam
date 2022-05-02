@@ -90,19 +90,18 @@ public class ProfileController {
         return responseService.getSuccessResult();
     }
 
-//    @Operation(summary = "미션 등록", notes = "<strong>미션 등록</strong>",
-//            parameters = {
-//                    @Parameter(name = "X-Auth-Token", description = "JWT Token", required = true, in = HEADER)
-//            })
-//    @PatchMapping("/mission")
-//    public CommonResult updateMission(@RequestBody @Valid MissionReqDto missionReqDto, Authentication authentication) {
-//        String token = jwtTokenProvider.resolveToken(request);
-//        String userId = jwtTokenProvider.getUserId(token);
-//        Profile mission = profileService.enrollMission(userId, missionReqDto.getMissionContent());
-//        profileService.enrollProfile(mission);
-//
-//        return responseService.getSuccessResult();
-//    }
+    @Operation(summary = "미션 등록", description = "<strong>미션 등록</strong>",
+            parameters = {
+                    @Parameter(name = "X-Auth-Token", description = "JWT Token", required = true, in = HEADER)
+            })
+    @PatchMapping("/mission")
+    public CommonResult updateMission(Authentication authentication) {
+        Long userPk = Long.parseLong(authentication.getName());
+        Profile mission = profileService.createMission(userPk);
+        profileService.enrollProfile(mission);
+
+        return responseService.getSuccessResult();
+    }
 
 
     @Operation(summary = "상태 수정", description = "<strong>상태 수정</strong>",
