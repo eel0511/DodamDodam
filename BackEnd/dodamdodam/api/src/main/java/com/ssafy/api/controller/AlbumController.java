@@ -137,12 +137,12 @@ public class AlbumController {
             parameters = {
                     @Parameter(name = "X-Auth-Token", description = "JWT Token", required = true, in = HEADER)
             })
-    @DeleteMapping(value = "/{reacionid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CommonResult deleteReaction(@PathVariable long reacionid, Authentication authentication) {
+    @DeleteMapping(value = "/{reactionid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CommonResult deleteReaction(@PathVariable long reactionid, Authentication authentication) {
 
         Long userPK = Long.parseLong(authentication.getName());
 
-        albumService.deleteAlbumReaction(userPK, reacionid);
+        albumService.deleteAlbumReaction(userPK, reactionid);
         return responseService.getSuccessResult();
     }
 
