@@ -105,8 +105,8 @@ public class ScheduleController {
             })
     @GetMapping(value = "/day/{day}")
     public ListResult<ScheduleDetailResDto> scheduleListDay(@PathVariable String day, Authentication authentication) {
-        Family family = familyService.fromUserIdToFamily(authentication);
-        return responseService.getListResult(scheduleService.getScheduleListByDay(family, day));
+        return responseService.getListResult(
+                scheduleService.getScheduleListByUserPkAndDay(Long.parseLong(authentication.getName()), day));
     }
 
     @Operation(summary = "월별 일정 조회", description = "<strong>해당 월</strong>로 일정을 조회한다.",

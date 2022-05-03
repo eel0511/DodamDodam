@@ -10,5 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @Schema(name = "FamilyPicture Response")
 public class FamilyPictureResDto {
+    @Schema(description = "사진", example = "/resources/family/asd_mm.png")
     private String picture;
 }

@@ -8,6 +8,7 @@ import com.ssafy.core.entity.Schedule;
 import com.ssafy.core.entity.User;
 import com.ssafy.core.exception.CustomErrorCode;
 import com.ssafy.core.exception.CustomException;
+import com.ssafy.core.repository.FamilyRepository;
 import com.ssafy.core.repository.ProfileRepository;
 import com.ssafy.core.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,15 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.ssafy.core.exception.CustomErrorCode.INVALID_REQUEST;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ProfileRepository profileRepository;
+    private final FamilyRepository familyRepository;
 
     public void createSchedule(NewScheduleReqDto scheduleReq, Family family, User user) {
         Profile profile = profileRepository.findProfileByUserPk(user.getUserPk());
@@ -49,14 +53,14 @@ public class ScheduleService {
         LocalDate result;
         try {
             if (localDateList[0].length() != 4 || localDateList[1].length() != 2 || localDateList[2].length() != 2) {
-                throw new CustomException(CustomErrorCode.INVALID_REQUEST, "잘못된 날짜 입력 방식입니다.");
+                throw new CustomException(INVALID_REQUEST, "잘못된 날짜 입력 방식입니다.");
             }
             result = LocalDate.of(
                     Integer.parseInt(localDateList[0]),
                     Integer.parseInt(localDateList[1]),
                     Integer.parseInt(localDateList[2]));
         } catch (NumberFormatException | DateTimeException e) {
-            throw new CustomException(CustomErrorCode.INVALID_REQUEST);
+            throw new CustomException(INVALID_REQUEST);
         }
         return result;
     }
@@ -64,7 +68,7 @@ public class ScheduleService {
     public Schedule getSchedule (long scheduleId, Family family) {
         Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
         if (schedule == null) {
-            throw new CustomException(CustomErrorCode.INVALID_REQUEST, "해당 일정이 없습니다.");
+            throw new CustomException(INVALID_REQUEST, "해당 일정이 없습니다.");
         } else if (schedule.getFamily().getId() != family.getId()) {
             throw new CustomException(CustomErrorCode.NOT_BELONG_FAMILY);
         }
@@ -72,23 +76,25 @@ public class ScheduleService {
     }
 
 
-    public List<ScheduleDetailResDto> getScheduleListByDay (Family family, String day) {
+    public List<ScheduleDetailResDto> getScheduleListByUserPkAndDay (Long userPk, String day) {
+        Family family = familyRepository.findFamilyByUserPk(userPk);
+
         String[] dayList = day.split("-");
         LocalDate result;
         try {
             if (dayList[0].length() != 4 || dayList[1].length() != 2 || dayList[2].length() != 2) {
-                throw new CustomException(CustomErrorCode.INVALID_REQUEST, "잘못된 날짜 입력 방식입니다.");
+                throw new CustomException(INVALID_REQUEST, "잘못된 날짜 입력 방식입니다.");
             }
             result = LocalDate.of(
                     Integer.parseInt(dayList[0]),
                     Integer.parseInt(dayList[1]),
                     Integer.parseInt(dayList[2]));
         } catch (NumberFormatException | DateTimeException e) {
-            throw new CustomException(CustomErrorCode.INVALID_REQUEST);
+            throw new CustomException(INVALID_REQUEST);
         }
         List<ScheduleDetailResDto> scheduleRes = scheduleRepository.findScheduleByDay(result, family);
         if (scheduleRes.isEmpty()) {
-            throw new CustomException(CustomErrorCode.INVALID_REQUEST, "해당하는 스케줄이 없습니다.");
+            throw new CustomException(INVALID_REQUEST, "해당하는 스케줄이 없습니다.");
         }
         return scheduleRes;
     }
@@ -97,15 +103,15 @@ public class ScheduleService {
         String[] dayList = month.split("-");
         try {
             if (dayList[0].length() != 4 || dayList[1].length() != 2) {
-                throw new CustomException(CustomErrorCode.INVALID_REQUEST, "잘못된 날짜 입력 방식입니다.");
+                throw new CustomException(INVALID_REQUEST, "잘못된 날짜 입력 방식입니다.");
             }
         } catch (NumberFormatException | DateTimeException e) {
-            throw new CustomException(CustomErrorCode.INVALID_REQUEST);
+            throw new CustomException(INVALID_REQUEST);
         }
         Integer result = Integer.parseInt(dayList[1]);
         List<ScheduleDetailResDto> scheduleRes = scheduleRepository.findScheduleByMonth(result, family);
         if (scheduleRes.isEmpty()) {
-            throw new CustomException(CustomErrorCode.INVALID_REQUEST, "해당하는 스케줄이 없습니다.");
+            throw new CustomException(INVALID_REQUEST, "해당하는 스케줄이 없습니다.");
         }
         return scheduleRes;
     }

@@ -10,5 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @Schema(name = "FamilyCode Response")
 public class FamilyCodeResDto {
+    @Schema(description = "코드", example = "A3123AFD33")
     private String code;
 }

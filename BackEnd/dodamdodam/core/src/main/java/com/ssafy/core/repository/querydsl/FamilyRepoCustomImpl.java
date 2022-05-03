@@ -31,11 +31,11 @@ public class FamilyRepoCustomImpl implements FamilyRepoCustom {
     @Override
     public Long findFamilyIdByUserPk(Long userPk) {
         return jpaQueryFactory.select(family.id)
-                .from(user)
+                .from(family)
                 .join(profile)
-                .on(user.userPk.eq(profile.id))
-                .join(family)
-                .on(profile.id.eq(family.id))
+                .on(profile.family.id.eq(family.id))
+                .join(user)
+                .on(profile.user.userPk.eq(user.userPk))
                 .where(user.userPk.eq(userPk))
                 .fetchFirst();
     }

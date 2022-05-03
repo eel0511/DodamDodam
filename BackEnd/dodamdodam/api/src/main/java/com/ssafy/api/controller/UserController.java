@@ -154,22 +154,7 @@ public class UserController {
 
         userService.saveUser(user);
 
-        return responseService.getSuccessResult();
-    }
-
-    @Operation(summary = "생일 정보 업데이트", description = "<strong>생일<strong>정보를 업데이트 한다.",
-            parameters = {
-                    @Parameter(name = "X-Auth-Token", description = "JWT Token", required = true, in = HEADER)
-            })
-    @GetMapping(value = "birthday/{birthday}")
-    public CommonResult updatePassword
-            (@PathVariable String birthday, Authentication authentication) {
-
-        Long userPK = Long.parseLong(authentication.getName());
-
-        userService.updateBirthdayWithUserPk(userPK, birthday);
-
-        return responseService.getSuccessResult();
+        return responseService.getSuccessResult("비밀번호가 성공적으로 재설정 되었습니다.");
     }
 
 
@@ -187,6 +172,6 @@ public class UserController {
         Long userPk = Long.parseLong(authentication.getName());
         User user = userService.findByUserPk(userPk);
         userService.updateFcmToken(user, fcmReq);
-        return responseService.getSuccessResult();
+        return responseService.getSuccessResult("성공적으로 저장되었습니다.");
     }
 }

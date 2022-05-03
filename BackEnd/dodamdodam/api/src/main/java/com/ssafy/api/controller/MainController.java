@@ -1,7 +1,9 @@
 package com.ssafy.api.controller;
 
+import com.ssafy.api.service.ScheduleService;
 import com.ssafy.core.dto.req.SuggestionReactionReqDto;
 import com.ssafy.core.dto.res.MainProfileResDto;
+import com.ssafy.core.dto.res.ScheduleDetailResDto;
 import com.ssafy.core.dto.res.SuggestionReactionResDto;
 import com.ssafy.core.dto.res.SuggestionResDto;
 import com.ssafy.api.service.MainService;
@@ -18,6 +20,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.HEADER;
 
 @Slf4j
@@ -29,6 +35,7 @@ public class MainController {
 
     private final MainService mainService;
     private final ResponseService responseService;
+    private final ScheduleService scheduleService;
 
     @Operation(summary = "가족 Profile 정보", description = "본인을 제외한 가족의 <strong>profile<strong> 정보를 받는다.",
             parameters = {
@@ -99,4 +106,47 @@ public class MainController {
                 mainService.manageSuggestionReaction(request, Long.parseLong(authentication.getName()))
         );
     }
+
+    @Operation(summary = "오늘 일정 리스트 목록", description = "<strong>오늘 일정 리스트<strong>를 조회한다.",
+            parameters = {
+                    @Parameter(name = "X-Auth-Token", description = "JWT Token", required = true, in = HEADER)
+            })
+    @GetMapping(value = "schedule/today")
+    public ListResult<ScheduleDetailResDto> getTodayScheduleList(Authentication authentication) {
+        LocalDate localDate = LocalDate.now();
+
+        return responseService.getListResult(
+                scheduleService.getScheduleListByUserPkAndDay
+                        (Long.parseLong(authentication.getName()), localDate.toString()));
+    }
+
+
+//    @Operation(summary = "미션 리스트 목록", description = "<strong>미션 리스트<strong>를 조회한다.",
+//            parameters = {
+//                    @Parameter(name = "X-Auth-Token", description = "JWT Token", required = true, in = HEADER)
+//            })
+//    @GetMapping(value = "alarm")
+//    public ListResult<PushAlarmReqDto> getAlarmList() {
+//        Class alarmListClass = AlarmList.class;
+//
+//        List<PushAlarmReqDto> alarmList = new ArrayList<>();
+//        alarmList.add(alarmListClass.getName(), alarmListClass.get
+//                alarmList.add(alarmListClass.getEnumConstants());
+//
+//        return responseService.getListResult(alarmList);
+//    }
+//
+//    @Operation(summary = "미션 리스트 목록", description = "<strong>미션 리스트<strong>를 조회한다.",
+//            parameters = {
+//                    @Parameter(name = "X-Auth-Token", description = "JWT Token", required = true, in = HEADER)
+//            })
+//    @PostMapping(value = "alarm")
+//    public CommonResult pushAlarm(@org.springframework.web.bind.annotation.RequestBody
+//                                  @io.swagger.v3.oas.annotations.parameters.RequestBody
+//                                          PushAlarmReqDto request) {
+//
+//        mainService.sendAlarmMessage(request);
+//
+//        return responseService.getSuccessResult("알림이 정상적으로 발송되었습니다.");
+//    }
 }

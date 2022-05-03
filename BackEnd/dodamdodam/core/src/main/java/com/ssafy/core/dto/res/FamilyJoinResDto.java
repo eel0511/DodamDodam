@@ -10,5 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @Schema(name = "FamilyJoin Response")
 public class FamilyJoinResDto {
+    @Schema(description = "코드", example = "A3123AFD33")
     private long familyId;
 }

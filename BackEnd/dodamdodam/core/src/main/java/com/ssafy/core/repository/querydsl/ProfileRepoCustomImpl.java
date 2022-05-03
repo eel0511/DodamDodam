@@ -45,7 +45,7 @@ public class ProfileRepoCustomImpl implements ProfileRepoCustom {
         return queryFactory
                 .select(Projections.fields(SignInResDto.class,
                         profile.id.as("profileId"),
-                        profile.family.id))
+                        profile.family.id.as("familyId")))
                 .from(profile)
                 .where(profile.user.userPk.eq(userPk))
                 .fetchFirst();

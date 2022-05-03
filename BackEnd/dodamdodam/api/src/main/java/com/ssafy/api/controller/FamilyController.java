@@ -3,7 +3,6 @@ package com.ssafy.api.controller;
 import com.ssafy.core.dto.req.FamilyJoinReqDto;
 import com.ssafy.core.dto.res.FamilyCodeResDto;
 import com.ssafy.core.dto.res.FamilyIdResDto;
-import com.ssafy.core.dto.res.FamilyJoinResDto;
 import com.ssafy.core.dto.res.FamilyPictureResDto;
 import com.ssafy.core.entity.Family;
 import com.ssafy.core.entity.User;
@@ -46,7 +45,7 @@ public class FamilyController {
                     @Parameter(name = "X-Auth-Token", description = "JWT Token", required = true, in = HEADER)
             })
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public SingleResult<FamilyJoinResDto> createFamily(
+    public SingleResult<FamilyIdResDto> createFamily(
             @ModelAttribute @Valid FamilyJoinReqDto familyJoinReqDto,
             Authentication authentication,
             HttpServletRequest request) {
@@ -58,7 +57,7 @@ public class FamilyController {
         Family family = familyService.createFamily();
         String[] imageInfo = profileService.enrollImage(familyJoinReqDto.getImage(), request).split("#");
         familyService.createProfile(family, user, familyJoinReqDto, imageInfo);
-        FamilyJoinResDto res = FamilyJoinResDto.builder()
+        FamilyIdResDto res = FamilyIdResDto.builder()
                 .familyId(family.getId())
                 .build();
         return responseService.getSingleResult(res);
@@ -93,7 +92,7 @@ public class FamilyController {
     public SingleResult<FamilyIdResDto> checkFamilyCode(@PathVariable String code) {
         Family family = familyService.checkCode(code);
         FamilyIdResDto res = FamilyIdResDto.builder()
-                .id(family.getId())
+                .familyId(family.getId())
                 .build();
         return responseService.getSingleResult(res);
     }
