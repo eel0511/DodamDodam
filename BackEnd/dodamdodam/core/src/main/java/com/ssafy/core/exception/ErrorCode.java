@@ -25,6 +25,7 @@ public enum ErrorCode {
     FILE_DOWNLOAD_FAIL(400, "A103", "파일 다운로드에 실패했습니다."),
     FILE_UPLOAD_FAIL(400, "A104", "파일 업로드에 실패했습니다."),
     FILE_COUNT_EXCEED(400, "A105", "업로드 가능한 파일의 갯수를 초과했습니다."),
+    WRONG_FILE_EXTENSION(400, "A106", "잘못된 파일 확장자명입니다.."),
 
     //Common
     INTERVAL_SERVER_ERROR(500, "C101", "서버에 오류가 발생했습니다."),

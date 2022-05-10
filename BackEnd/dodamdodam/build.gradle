@@ -79,6 +79,10 @@ project(':api') {
         //firebase sdk, okhttp
         implementation 'com.google.firebase:firebase-admin:8.1.0'
         implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
+
+        // resizing(marvin)
+        implementation 'com.github.downgoon:marvin:1.5.5'
+        implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
     }
 }
 
