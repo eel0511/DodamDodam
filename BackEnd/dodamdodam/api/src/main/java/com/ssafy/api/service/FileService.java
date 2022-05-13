@@ -11,6 +11,7 @@ import marvin.image.MarvinImage;
 import org.marvinproject.image.transform.scale.Scale;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -120,6 +121,7 @@ public class FileService {
 //    }
 
 
+    @Async
     public MultipartFile resizeImage(String fileName, MultipartFile file) {
         if (file.getSize() > 1572864) {
             try {
