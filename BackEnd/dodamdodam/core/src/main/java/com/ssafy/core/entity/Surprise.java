@@ -1,14 +1,12 @@
 package com.ssafy.core.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
+@Builder
 @Entity
 @Getter
 @NoArgsConstructor
@@ -25,7 +23,7 @@ public class Surprise {
     private String message;
 
     @Setter
-    @Column
+    @Column(nullable = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
@@ -36,5 +34,8 @@ public class Surprise {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_id")
     private Profile target;
+
+    @Column(nullable = false)
+    private boolean isRead;
 
 }

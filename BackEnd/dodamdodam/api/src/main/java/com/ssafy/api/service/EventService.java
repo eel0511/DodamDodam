@@ -1,13 +1,13 @@
 package com.ssafy.api.service;
 
+import com.ssafy.core.dto.req.SurpriseReqDto;
 import com.ssafy.core.dto.req.WishTreeReqDto;
 import com.ssafy.core.dto.res.WishTreeResDto;
-import com.ssafy.core.entity.Family;
-import com.ssafy.core.entity.Profile;
-import com.ssafy.core.entity.User;
-import com.ssafy.core.entity.WishTree;
+import com.ssafy.core.entity.*;
 import com.ssafy.core.exception.CustomException;
 import com.ssafy.core.exception.ErrorCode;
+import com.ssafy.core.repository.ProfileRepository;
+import com.ssafy.core.repository.SurpriseRepository;
 import com.ssafy.core.repository.UserRepository;
 import com.ssafy.core.repository.WishTreeRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +15,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static com.ssafy.core.exception.ErrorCode.INVALID_REQUEST;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class EventService {
+
     private final WishTreeRepository wishTreeRepository;
+    private final SurpriseRepository surpriseRepository;
+    private final ProfileRepository profileRepository;
+
     public void createWishTree(Profile profile, Family family, WishTreeReqDto wishTreeReq) {
         if (wishTreeRepository.findWishTreeByProfile(profile) != null) {
             throw new CustomException(ErrorCode.INVALID_REQUEST, "위시 트리는 하나만 생성 가능합니다.");
@@ -80,5 +88,23 @@ public class EventService {
             throw new CustomException(ErrorCode.INVALID_REQUEST, "해당 권한이 없습니다.");
         }
         wishTreeRepository.delete(wishTree);
+    }
+
+    public void createSurprise(Profile maker, SurpriseReqDto surpriseReq, LocalDate date) {
+        Long targetProfileId = surpriseReq.getTargetProfileId();
+        Profile target = profileRepository.findProfileById(targetProfileId);
+        if (maker.getFamily().getId() != target.getFamily().getId()) {
+            throw new CustomException(ErrorCode.INVALID_REQUEST, "타 가족 그룹에 권한이 없습니다.");
+        }
+        if (date.isBefore(LocalDate.now())) {
+            throw new CustomException(INVALID_REQUEST, "이미 지난 날짜는 등록이 불가능합니다.");
+        }
+        surpriseRepository.save(Surprise.builder()
+                .maker(maker)
+                .target(target)
+                .message(surpriseReq.getMessage())
+                .date(date)
+                .isRead(false)
+                .build());
     }
 }
