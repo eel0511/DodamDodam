@@ -130,6 +130,7 @@ public class AlbumService {
 //                multipartFiles.get(i).transferTo(new File(filePath));
                 if(albumReqDto.getMainIndex()==i) isMain=true;
                 else isMain=false;
+
                 filePath = fileService.uploadFileV1("album",multipartFiles.get(i));
                 Picture picture = Picture.builder()
                         .album(album)
@@ -138,6 +139,8 @@ public class AlbumService {
                         .is_main(isMain)
                         .build();
                 pictureRepository.save(picture);
+                fileService.resizeImage("album",multipartFiles.get(i), picture);
+
 
             }
 
@@ -231,6 +234,7 @@ public class AlbumService {
                             .path_name(filePath)
                             .build();
                     pictureRepository.save(picture);
+                    fileService.resizeImage("album",multipartFiles.get(j), picture);
                 }
             }
             //메인 사진 업데이트
@@ -257,6 +261,7 @@ public class AlbumService {
                             .path_name(filePath)
                             .build();
                     pictureRepository.save(picture);
+                    fileService.resizeImage("album",multipartFiles.get(j), picture);
                 }
             }
             //메인 사진 업데이트
